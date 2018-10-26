@@ -1,10 +1,12 @@
 {
     "test": {
         "PORT": 5000,
-        "MONGODB_URI": "mongodb://localhost:27017/messageBuilderTest"
+        "MONGODB_URI": "mongodb://localhost:27017/messageBuilderTest",
+        "USER_LIMIT": 15
     },
     "development": {
         "PORT": 5000,
-        "MONGODB_URI": "mongodb://localhost:27017/messageBuilder"
+        "MONGODB_URI": "mongodb://localhost:27017/messageBuilder",
+        "USER_LIMIT": 50
     }
 }

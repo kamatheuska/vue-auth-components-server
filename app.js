@@ -9,6 +9,7 @@ const { db } = require('./db/mongoose')
 const app = express()
 
 const dist = path.join(__dirname, 'dist')
+const userLimit = process.env.USER_LIMIT
 
 const { User } = require('./models/User')
 const { authenticate } = require('./middleware/authenticate')
@@ -31,16 +32,29 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // POST /users
-app.post('/users', (req, res, next) => {
-    let body = _.pick(req.body, ['email', 'password'])
-    let user = new User(body)
-    console.log('body\n', body)
-    user.save()
-        .then(() => user.generateAuthToken())
-        .then((token) => {
-            res.header('x-auth', token).send(user)
-        })
-        .catch(next)
+app.post('/users',
+
+    (req, res, next) => {
+        User.countDocuments()
+            .then((count) => {
+                if (count >= userLimit) {
+                    return res.status(403).json({
+                        message: 'Database is full. Sorry!'
+                    })
+                } else {
+                    next()
+                }
+            })
+    },
+    (req, res, next) => {
+        let body = _.pick(req.body, ['email', 'password'])
+        let user = new User(body)
+        user.save()
+            .then(() => user.generateAuthToken())
+            .then((token) => {
+                res.header('x-auth', token).send(user)
+            })
+            .catch(next)
 })
 
 app.get('/users/me',
@@ -48,11 +62,10 @@ app.get('/users/me',
     (req, res) => {
         res.send(req.user)
     })
-
+// app.post('/users/all', )
 // POST /login {email, password}
 app.post('/users/login', (req, res, next) => {
     let body = _.pick(req.body, ['email', 'password'])
-    console.log('body\n', body)
     User.findByCredentials(body.email, body.password)
         .then((user) => {
             return user.generateAuthToken().then((token) => {

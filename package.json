@@ -4,7 +4,7 @@
     "description": "Server for Message Builder app",
     "main": "server.js",
     "scripts": {
-        "test": "nodemon --ext js --exec 'clear; tape tests/**.*.js | bin/tap-spec'",
+        "test": "nodemon --ext js --exec 'clear; tape tests/**.*.js | ./node_modules/.bin/tap-spec'",
         "start": "node server.js",
         "serverlint": "nodemon --exec 'clear; eslint **/*.js'"
     },

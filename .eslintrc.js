@@ -8,6 +8,7 @@ module.exports = {
         "ecmaVersion": 2018
     },
     "rules": {
+        "space-before-function-paren": ["error", "always"],
         "no-console": ["off"],
         "indent": ["error", 4, { "switchCase": 1 }],
         "linebreak-style": [
